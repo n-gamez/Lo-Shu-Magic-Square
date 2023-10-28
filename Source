@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+bool checkIfMagic(int magicSquareArrayPar[3][3]);
+int generateRandomNumber();
+int numOfSquaresTested=0;
+
+int main() {
+    
+    srand(time(NULL));
+    int magicSquareArray[3][3];
+    bool isItMagic=false;
+
+    while(isItMagic==false){
+        int indexOfPrevRandomNumArray=0;
+        int previousRandomNumbers[9];
+        for (int i = 0; i < 9; i++) {
+        previousRandomNumbers[i] = -1;
+        }
+
+        for(int i=0;i<3;i++){
+            for(int j=0;j<3;j++){
+                int newRandomNumber = generateRandomNumber();
+                for(int k=0;k<9;k++){
+                    if(previousRandomNumbers[k]==newRandomNumber){
+                        newRandomNumber=generateRandomNumber();
+                        k=-1;
+                    }
+                }
+                magicSquareArray[i][j]=newRandomNumber;
+                previousRandomNumbers[indexOfPrevRandomNumArray]=newRandomNumber;
+                indexOfPrevRandomNumArray++;
+            }
+        }
+        isItMagic=checkIfMagic(magicSquareArray);
+    }
+
+    for (int i = 0; i < 3; i++) {
+        printf("[");
+        for (int j = 0; j < 3; j++) {
+            if(j==2){
+                printf("%d",magicSquareArray[i][j]);
+            }
+            else{
+            printf("%d ", magicSquareArray[i][j]);
+            }
+        }
+        printf("]");
+        printf("\n");
+    }
+        printf("The number of times a square was tested is: %d\n", numOfSquaresTested);
+
+    return 0;
+}
+
+bool checkIfMagic(int magicSquareArrayPar[3][3]){
+    const int loShuTargetSum = 15;
+    int currentRowSum=0;
+    int currentColumnSum=0;
+    numOfSquaresTested++;
+    for (int i=0; i<3; i++) {
+        int rowSum = 0;
+        int colSum = 0;
+        for (int j=0; j<3; j++) {
+            rowSum += magicSquareArrayPar[i][j];
+            colSum += magicSquareArrayPar[j][i];
+        }
+        if (rowSum != loShuTargetSum){
+            return false;
+        }
+        if(colSum != loShuTargetSum){
+            return false;
+        }
+    }
+
+    int diagonalSum1 = magicSquareArrayPar[0][0] + magicSquareArrayPar[1][1] + magicSquareArrayPar[2][2];
+     if(diagonalSum1!=loShuTargetSum){
+        return false;
+    }
+    int diagonalSum2 = magicSquareArrayPar[0][2] + magicSquareArrayPar[1][1] + magicSquareArrayPar[2][0];
+    if(diagonalSum2!=loShuTargetSum){
+        return false;
+    }
+    return true;
+}
+
+int generateRandomNumber() {
+    return (rand()%9)+1;
+}
+
